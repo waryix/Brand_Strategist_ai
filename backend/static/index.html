@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Brand Strategist</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.75em; margin-bottom: 0.75em; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25em;}
+        .prose ul { list-style-type: disc; margin-left: 1.5em; color: #475569;}
+        .prose li { margin-bottom: 0.5em; }
+        .prose strong { font-weight: 600; color: #334155; }
+        .prose p { color: #475569; line-height: 1.6; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="absolute top-0 left-0 -z-10 h-full w-full bg-white"><div class="absolute top-0 left-0 -z-10 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div></div>
+
+    <div class="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center justify-center bg-indigo-100 text-indigo-600 p-3.5 rounded-2xl mb-5 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12a5 5 0 0 0 5-5 5 5 0 0 0-5-5 5 5 0 0 0-5 5 5 5 0 0 0 5 5Z"/><path d="M19 19a7 7 0 0 0-14 0"/></svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">AI Brand Strategist</h1>
+            <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Instantly distill your brand's essence. Paste your mission, values, or 'About Us' text below to reveal its core identity.</p>
+        </header>
+
+        <main>
+            <!-- Input Section -->
+            <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200/80">
+                <label for="brandText" class="block text-sm font-semibold text-slate-800 mb-2">Your Brand Text</label>
+                <textarea id="brandText" rows="10" class="w-full p-4 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out resize-y" placeholder="e.g., 'At Terra, our mission is to craft the most sustainable and beautiful furniture for modern homes...'"></textarea>
+                <div class="mt-5 text-right">
+                    <button id="analyzeBtn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-105 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:scale-100">
+                        <span id="btnText">Analyze Brand</span>
+                        <span id="btnSpinner" class="hidden items-center">...Analyzing...</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="errorDisplay" class="hidden mt-6 bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-r-lg" role="alert">
+                <p class="font-bold">An Error Occurred</p>
+                <p id="errorMessage">Something went wrong. Please try again.</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden mt-12">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-3 sm:mb-0">Brand Analysis</h2>
+                    <button id="generateGuideBtn" class="bg-green-600 text-white font-bold py-2.5 px-6 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all transform hover:scale-105 disabled:bg-slate-400 disabled:scale-100">
+                        <span id="guideBtnText">Create Full Brand Guide</span>
+                        <span id="guideBtnSpinner" class="hidden items-center">...Creating Guide...</span>
+                    </button>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-slate-200/80 grid md:grid-cols-2 gap-x-10 gap-y-8">
+                    <div class="space-y-8">
+                        <div class="fade-in"><h3 class="font-semibold text-lg text-indigo-600">Brand Archetype</h3><p id="archetype" class="text-slate-800 text-2xl font-bold"></p></div>
+                        <div class="fade-in" style="animation-delay: 0.1s;"><h3 class="font-semibold text-lg text-indigo-600">Target Audience</h3><p id="audience" class="text-slate-600 text-base leading-relaxed"></p></div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="fade-in" style="animation-delay: 0.2s;"><h3 class="font-semibold text-lg text-indigo-600">Tone & Voice</h3><div id="tone" class="flex flex-wrap gap-2"></div></div>
+                        <div class="fade-in" style="animation-delay: 0.3s;"><h3 class="font-semibold text-lg text-indigo-600">Core Values</h3><div id="values" class="flex flex-wrap gap-2"></div></div>
+                        <div class="fade-in" style="animation-delay: 0.4s;"><h3 class="font-semibold text-lg text-indigo-600">Keywords</h3><div id="keywords" class="flex flex-wrap gap-2"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Section -->
+            <div id="guideSection" class="hidden mt-12 fade-in">
+                <h2 class="text-3xl font-bold text-center mb-6 text-slate-900">Your Brand Voice & Tone Guide</h2>
+                <div id="guideContent" class="bg-white/80 backdrop-blur-sm p-8 md:p-10 rounded-2xl shadow-lg border border-slate-200/80 prose max-w-none"></div>
+            </div>
+
+            <!-- Content Generation Section -->
+            <div id="contentSection" class="hidden mt-12 fade-in">
+                <h2 class="text-3xl font-bold text-center mb-6 text-slate-900">On-Brand Content Creation</h2>
+                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200/80">
+                    <label for="contentRequest" class="block text-sm font-semibold text-slate-800 mb-2">What would you like to write?</label>
+                    <textarea id="contentRequest" rows="3" class="w-full p-4 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="e.g., A tweet announcing our new summer collection..."></textarea>
+                    <div class="mt-5 text-right">
+                        <button id="generateContentBtn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-105 disabled:bg-slate-400 disabled:scale-100">
+                            <span id="contentBtnText">Generate Content</span>
+                            <span id="contentBtnSpinner" class="hidden items-center">...Generating...</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="generatedContentDisplay" class="hidden mt-6 bg-slate-100 p-6 rounded-lg border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-2">Generated Content:</h3>
+                    <pre id="generatedContent" class="whitespace-pre-wrap font-sans text-slate-700"></pre>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const brandTextInput = document.getElementById('brandText');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const generateGuideBtn = document.getElementById('generateGuideBtn');
+        const contentSection = document.getElementById('contentSection');
+        const generateContentBtn = document.getElementById('generateContentBtn');
+        const generatedContentDisplay = document.getElementById('generatedContentDisplay');
+        const generatedContent = document.getElementById('generatedContent');
+        const resultsSection = document.getElementById('resultsSection');
+        const guideSection = document.getElementById('guideSection');
+        const guideContent = document.getElementById('guideContent');
+        const errorDisplay = document.getElementById('errorDisplay');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // --- State & API ---
+        let currentAnalysisData = null;
+        let currentBrandGuide = null;
+        const ANALYZE_ENDPOINT = '/api/v1/analyze-brand';
+        const GUIDE_ENDPOINT = '/api/v1/generate-guide';
+        const CONTENT_ENDPOINT = '/api/v1/generate-content';
+
+        // --- Event Listeners ---
+        analyzeBtn.addEventListener('click', handleAnalysis);
+        generateGuideBtn.addEventListener('click', handleGuideGeneration);
+        generateContentBtn.addEventListener('click', handleContentGeneration);
+
+        // --- Core Functions ---
+        async function handleAnalysis() {
+            const text = brandTextInput.value.trim();
+            if (!text) { showError('Please enter some text to analyze.'); return; }
+            setLoadingState('analyze', true);
+            hideError();
+            hideResults();
+            try {
+                const response = await fetch(ANALYZE_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ brand_text: text }) });
+                if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.detail || `HTTP error! Status: ${response.status}`); }
+                const data = await response.json();
+                currentAnalysisData = data;
+                displayResults(data);
+            } catch (error) { showError(error.message); } finally { setLoadingState('analyze', false); }
+        }
+
+        async function handleGuideGeneration() {
+            if (!currentAnalysisData) { return; }
+            setLoadingState('guide', true);
+            hideError();
+            try {
+                const response = await fetch(GUIDE_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(currentAnalysisData) });
+                if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.detail || `HTTP error! Status: ${response.status}`); }
+                const data = await response.json();
+                currentBrandGuide = data.guide_markdown;
+                displayGuide(currentBrandGuide);
+            } catch (error) { showError(error.message); } finally { setLoadingState('guide', false); }
+        }
+
+        async function handleContentGeneration() {
+            const userRequest = document.getElementById('contentRequest').value.trim();
+            if (!currentBrandGuide || !userRequest) { showError('Please generate a guide and enter a request.'); return; }
+            setLoadingState('content', true);
+            hideError();
+            try {
+                const response = await fetch(CONTENT_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ brand_guide: currentBrandGuide, user_request: userRequest }) });
+                if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.detail || `HTTP error! Status: ${response.status}`); }
+                const data = await response.json();
+                displayGeneratedContent(data.generated_content);
+            } catch (error) { showError(error.message); } finally { setLoadingState('content', false); }
+        }
+
+        // --- UI Update Functions ---
+        function displayResults(data) {
+            document.getElementById('archetype').textContent = data.BrandArchetype || 'N/A';
+            document.getElementById('audience').textContent = data.TargetAudience || 'N/A';
+            const createTag = (text, colorClasses) => { const tag = document.createElement('span'); tag.textContent = text; tag.className = `px-3 py-1.5 rounded-full text-sm font-semibold ${colorClasses}`; return tag; };
+            const toneContainer = document.getElementById('tone'); toneContainer.innerHTML = ''; data.ToneAndVoice.forEach(item => toneContainer.appendChild(createTag(item, 'bg-blue-100 text-blue-800')));
+            const valuesContainer = document.getElementById('values'); valuesContainer.innerHTML = ''; data.CoreValues.forEach(item => valuesContainer.appendChild(createTag(item, 'bg-green-100 text-green-800')));
+            const keywordsContainer = document.getElementById('keywords'); keywordsContainer.innerHTML = ''; data.Keywords.forEach(item => keywordsContainer.appendChild(createTag(item, 'bg-slate-200 text-slate-800')));
+            resultsSection.classList.remove('hidden');
+            guideSection.classList.add('hidden');
+            contentSection.classList.add('hidden');
+        }
+
+        function displayGuide(markdown) {
+            // FIX: Add a check to ensure markdown is a valid, non-empty string
+            if (markdown && typeof markdown === 'string' && markdown.trim() !== '') {
+                guideContent.innerHTML = marked.parse(markdown);
+                guideSection.classList.remove('hidden');
+                contentSection.classList.remove('hidden'); // This now correctly shows the content section
+                guideSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                showError("The generated brand guide was empty. The AI might be overloaded. Please try again.");
+            }
+        }
+
+        function displayGeneratedContent(content) {
+            generatedContent.textContent = content;
+            generatedContentDisplay.classList.remove('hidden');
+            generatedContentDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function setLoadingState(buttonType, isLoading) {
+            let btn, textEl, spinnerEl;
+            if (buttonType === 'analyze') { [btn, textEl, spinnerEl] = [analyzeBtn, document.getElementById('btnText'), document.getElementById('btnSpinner')]; }
+            else if (buttonType === 'guide') { [btn, textEl, spinnerEl] = [generateGuideBtn, document.getElementById('guideBtnText'), document.getElementById('guideBtnSpinner')]; }
+            else { [btn, textEl, spinnerEl] = [generateContentBtn, document.getElementById('contentBtnText'), document.getElementById('contentBtnSpinner')]; }
+            
+            btn.disabled = isLoading;
+            if (isLoading) { textEl.classList.add('hidden'); spinnerEl.classList.remove('hidden'); spinnerEl.style.display = 'inline-flex'; }
+            else { textEl.classList.remove('hidden'); spinnerEl.classList.add('hidden'); }
+        }
+        
+        function showError(message) { errorMessage.textContent = message; errorDisplay.classList.remove('hidden'); }
+        function hideError() { errorDisplay.classList.add('hidden'); }
+        function hideResults() { resultsSection.classList.add('hidden'); guideSection.classList.add('hidden'); contentSection.classList.add('hidden'); }
+    </script>
+</body>
+</html>
