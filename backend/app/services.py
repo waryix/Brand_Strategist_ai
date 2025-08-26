@@ -54,7 +54,7 @@ async def analyze_brand(text: str) -> BrandAnalysisResponse:
     """ Analyzes the provided text using a local AI model to extract brand identity. """
     try:
         response = await client.chat.completions.create(
-            model="llama3",
+            model="llama3-8b-8192",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT_ANALYZE},
                 {"role": "user", "content": f"Here is the brand text: {text}"}
