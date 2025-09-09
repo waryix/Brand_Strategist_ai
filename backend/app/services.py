@@ -54,7 +54,7 @@ async def analyze_brand(text: str) -> BrandAnalysisResponse:
     """ Analyzes the provided text using a local AI model to extract brand identity. """
     try:
         response = await client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT_ANALYZE},
                 {"role": "user", "content": f"Here is the brand text: {text}"}
@@ -89,7 +89,7 @@ async def generate_guide(analysis_data: dict) -> str:
     """ Generates a brand guide in Markdown format based on the analysis data. """
     try:
         response = await client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": GUIDE_GENERATOR_PROMPT},
                 {"role": "user", "content": f"Here is the brand analysis JSON: {json.dumps(analysis_data)}"}
@@ -105,7 +105,7 @@ async def generate_content(guide: str, request: str) -> str:
     """ Generates on-brand content based on a guide and a user request. """
     try:
         response = await client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": CONTENT_GENERATOR_PROMPT},
                 {"role": "user", "content": f"<brand_guide>\n{guide}\n</brand_guide>\n\n<request>\n{request}\n</request>"}
